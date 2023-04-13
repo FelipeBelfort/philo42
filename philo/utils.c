@@ -6,13 +6,13 @@
 /*   By: FelipeBelfort <FelipeBelfort@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 16:01:12 by fbelfort          #+#    #+#             */
-/*   Updated: 2023/04/10 23:25:34 by FelipeBelfo      ###   ########.fr       */
+/*   Updated: 2023/04/13 19:57:36 by FelipeBelfo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-long long int	ft_atoli(const char *str)
+int	ft_atoi(const char *str)
 {
 	int				i;
 	long long int	nb;
@@ -31,7 +31,9 @@ long long int	ft_atoli(const char *str)
 	while (str[i] >= '0' && str[i] <= '9')
 		nb = nb * 10 + str[i++] - '0';
 	nb *= minus;
-	return (nb);
+	if (nb == (int) nb)
+		return (nb);
+	return (0);
 }
 
 int	ft_isdigit(int c)
@@ -52,4 +54,44 @@ void	*ft_calloc(size_t count, size_t size)
 		return (NULL);
 	memset(ptr, 0, count * size);
 	return (ptr);
+}
+
+static int	check_args_type(char **argv)
+{
+	int	i;
+	int	j;
+
+	i = 0;
+	while (argv[++i])
+	{
+		j = -1;
+		while (argv[i][++j])
+		{
+			if (!ft_isdigit(argv[i][j]))
+				return (1);
+		}
+	}
+	return (0);
+}
+
+int	check_args(int argc, char **argv)
+{
+	if (argc < 5 || argc > 6)
+	{
+		printf("Error: Expected 'number_of_philosophers ");
+		printf("time_to_die time_to_eat");
+		printf(" time_to_sleep [number_of_times_each_philosopher_must_eat]'\n");
+		return (1);
+	}
+	if (check_args_type(argv))
+	{
+		printf("The arguments have to be numeric");
+		return (1);
+	}
+	if (!ft_atoi(argv[1]) || (argv[5] && !ft_atoi(argv[5])))
+	{
+		handle_exception_cases(argv);
+		return (1);
+	}
+	return (0);
 }
