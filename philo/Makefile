@@ -14,7 +14,8 @@ NAME			=	philo
 
 GCC				=	cc
 
-CFLAGS			=	-Wall -Wextra -Werror
+# CFLAGS			=	-Wall -Wextra -Werror -O3 -pthread
+CFLAGS			=	-Wall -Wextra -Werror -O3 -pthread -g3 -fsanitize=thread
 
 SRC				=	main.c \
 					t_philo_management.c \
@@ -35,7 +36,7 @@ $(OBJS_DIR)%.o	: %.c $(HEADER)
 all				:	$(NAME)
 
 $(NAME)			: $(OBJS_DIR) $(OBJ) Makefile
-			$(GCC) -o $(NAME) $(OBJ)
+			$(GCC) $(CFLAGS) -o $(NAME) $(OBJ)
 
 $(OBJS_DIR)		:
 			mkdir -p $(OBJS_DIR)

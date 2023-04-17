@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "philo.h"
+#include <limits.h>
 
 int	ft_atoi(const char *str)
 {
@@ -47,7 +48,7 @@ void	*ft_calloc(size_t count, size_t size)
 {
 	void	*ptr;
 
-	if (size && count > SIZE_MAX / size)
+	if (size && count > 4294967295 / size)
 		return (NULL);
 	ptr = malloc(count * size);
 	if (!ptr)
@@ -85,7 +86,7 @@ int	check_args(int argc, char **argv)
 	}
 	if (check_args_type(argv))
 	{
-		printf("The arguments have to be numeric");
+		printf("The arguments have to be numeric and positive\n");
 		return (1);
 	}
 	if (!ft_atoi(argv[1]) || (argv[5] && !ft_atoi(argv[5])))

@@ -73,27 +73,23 @@ static void	init_threads(t_philo *philos)
 
 	i = 0;
 	// *philos->dead = 1;
-	// pthread_mutex_lock(philos->dead_mutex);
 	while (philos->id > i)
 	{
-		pthread_mutex_lock(&philos->fork_mutex);
+		// pthread_mutex_lock(&philos->fork_mutex);
 		if (pthread_create(&philos->philo, NULL, &routine, philos))
 			return (perror("Philosophers error: "));
 		philos = philos->next;
 		i++;
 	}
-	// usleep(500);
-	start = timestamp() + (i * 250);
-	// philos->time_start = &start;
+	start = timestamp() + (i * 50);
 	while (!philos->time_start)
 	{
 		philos->time_start = start;
 		philos->last_meal = start;
-		pthread_mutex_unlock(&philos->fork_mutex);
+		// pthread_mutex_unlock(&philos->fork_mutex);
 		philos = philos->next;
 	}
-	// *philos->dead = 0;
-	// pthread_mutex_unlock(philos->dead_mutex);
+	*philos->dead = 0;
 	while (i)
 	{
 		pthread_join(philos->philo, NULL);
@@ -108,7 +104,7 @@ int	main(int argc, char **argv)
 	pthread_mutex_t	dead_mutex;
 	int				dead;
 
-	dead = 0;
+	dead = 1;
 	if (check_args(argc, argv))
 		return (1);
 	philos = init_philos(argv, &dead_mutex, &dead);

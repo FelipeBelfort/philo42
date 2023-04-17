@@ -21,8 +21,8 @@ static int	check_break(t_philo *philo)
 		pthread_mutex_lock(philo->dead_mutex);
 		if (!*philo->dead)
 		{
-			printf("%llu %d died\n", timestamp() - philo->time_start, philo->id);
 			*philo->dead = philo->id;
+			printf("%llu %d died\n", timestamp() - philo->time_start, philo->id);
 		}
 		pthread_mutex_unlock(philo->dead_mutex);
 		return (1);
@@ -34,6 +34,11 @@ static void	meal_time(t_philo *philo)
 {
 	pthread_mutex_lock(&philo->fork_mutex);
 	philo->fork = 1;
+	if (check_break(philo))
+	{
+		pthread_mutex_unlock(&philo->fork_mutex);
+		return ;
+	}
 	printf("%llu %d has taken a fork\n", timestamp() - philo->time_start, philo->id);
 	while (philo->next->fork)
 	{
@@ -42,34 +47,30 @@ static void	meal_time(t_philo *philo)
 			pthread_mutex_unlock(&philo->fork_mutex);
 			return ;
 		}
-		usleep(100);
+		usleep(250);
 	}
 	pthread_mutex_lock(&philo->next->fork_mutex);
-	// printf("teste %d tempo %llu\n", philo->id, timestamp());
 	philo->next->fork = 1;
 	if (check_break(philo))
+	{
+		pthread_mutex_unlock(&philo->fork_mutex);
+		pthread_mutex_unlock(&philo->next->fork_mutex);
 		return ;
+	}
 	philo->last_meal = timestamp();
-	// printf("teste %d tempo %llu\n", philo->id, timestamp());
 	printf("%llu %d is eating\n", philo->last_meal - philo->time_start, philo->id);
-	// printf("teste %d tempo %llu\n", philo->id, timestamp());
 	philo->meals++;
 	while (timestamp() < philo->last_meal + philo->time_eat)
-		usleep(100);
-	// usleep(philo->time_eat * 1000);
-	// usleep((philo->time_eat - (timestamp() - philo->last_meal)) * 999);
+		usleep(250);
 	philo->fork = 0;
-	// printf("teste %d tempo %llu\n", philo->id, timestamp());
-	pthread_mutex_unlock(&philo->fork_mutex);
 	philo->next->fork = 0;
+	pthread_mutex_unlock(&philo->fork_mutex);
 	pthread_mutex_unlock(&philo->next->fork_mutex);
 
 }
 
 static int	thinking_time(t_philo *philo)
 {
-	// if (check_break(philo))
-	// 	return (1);
 	if (philo->fork || philo->next->fork)
 		printf("%llu %d is thinking\n", timestamp() - philo->time_start, philo->id);
 	while (philo->fork)
@@ -90,7 +91,7 @@ static int	sleeping_time(t_philo *philo)
 	go_sleep = timestamp();
 	printf("%llu %d is sleeping\n", go_sleep - philo->time_start, philo->id);
 	while (timestamp() < go_sleep + philo->time_sleep)
-		usleep(100);
+		usleep(250);
 	return (0);
 }
 
@@ -99,18 +100,15 @@ void	*routine(void *arg)
 	t_philo	*philo;
 
 	philo = (t_philo *) arg;
-	// pthread_mutex_lock(philo->dead_mutex);
-	// pthread_mutex_unlock(philo->dead_mutex);
-	pthread_mutex_lock(&philo->fork_mutex);
-	pthread_mutex_unlock(&philo->fork_mutex);
-	while (timestamp() < philo->time_start)
-		;
-	// philo->last_meal = timestamp();
+	// pthread_mutex_lock(&philo->fork_mutex);
+	// pthread_mutex_unlock(&philo->fork_mutex);
+	while (*philo->dead || timestamp() < philo->time_start)
+		usleep(200);
 	if (philo->id % 2 == 0)
-		usleep(250);
+		usleep(500);
 	while (!check_break(philo))
 	{
-		if (philo->max_meal && philo->meals == philo->max_meal)
+		if (philo->max_meal && philo->meals >= philo->max_meal)
 			break ;
 		if (thinking_time(philo))
 			break ;

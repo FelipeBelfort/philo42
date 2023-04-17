@@ -24,7 +24,7 @@ void	philo_clearlst(t_philo **lst)
 	{
 		next = tmp->next;
 		pthread_mutex_destroy(&tmp->fork_mutex);
-		pthread_detach(tmp->philo);
+		// pthread_detach(tmp->philo);
 		free(tmp);
 		tmp = NULL;
 		tmp = next;
