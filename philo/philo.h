@@ -6,7 +6,7 @@
 /*   By: FelipeBelfort <FelipeBelfort@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 13:40:14 by FelipeBelfo       #+#    #+#             */
-/*   Updated: 2023/04/13 19:53:35 by FelipeBelfo      ###   ########.fr       */
+/*   Updated: 2023/04/14 14:26:42 by FelipeBelfo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,10 @@ typedef struct s_philo
 	int				meals;
 	int				max_meal;
 	t_stmp			last_meal;
-	int				time_eat;
-	int				time_sleep;
+	t_stmp			time_eat;
+	t_stmp			time_sleep;
 	t_stmp			time_die;
+	t_stmp			time_start;
 	pthread_t		philo;
 	pthread_mutex_t	fork_mutex;
 	int				fork;

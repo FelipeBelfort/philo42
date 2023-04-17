@@ -6,7 +6,7 @@
 /*   By: FelipeBelfort <FelipeBelfort@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 13:45:38 by FelipeBelfo       #+#    #+#             */
-/*   Updated: 2023/04/13 19:46:41 by FelipeBelfo      ###   ########.fr       */
+/*   Updated: 2023/04/14 16:23:38 by FelipeBelfo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,20 +68,31 @@ static t_philo	*init_philos(char **av, pthread_mutex_t *dead_mutex, int *dead)
 
 static void	init_threads(t_philo *philos)
 {
-	int	i;
+	int		i;
+	t_stmp	start;
 
 	i = 0;
-	*philos->dead = 1;
+	// *philos->dead = 1;
 	// pthread_mutex_lock(philos->dead_mutex);
 	while (philos->id > i)
 	{
+		pthread_mutex_lock(&philos->fork_mutex);
 		if (pthread_create(&philos->philo, NULL, &routine, philos))
 			return (perror("Philosophers error: "));
 		philos = philos->next;
 		i++;
 	}
-	usleep(500);
-	*philos->dead = 0;
+	// usleep(500);
+	start = timestamp() + (i * 250);
+	// philos->time_start = &start;
+	while (!philos->time_start)
+	{
+		philos->time_start = start;
+		philos->last_meal = start;
+		pthread_mutex_unlock(&philos->fork_mutex);
+		philos = philos->next;
+	}
+	// *philos->dead = 0;
 	// pthread_mutex_unlock(philos->dead_mutex);
 	while (i)
 	{
