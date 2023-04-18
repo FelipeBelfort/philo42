@@ -15,13 +15,14 @@ NAME			=	philo
 GCC				=	cc
 
 # /usr/lib/itw-bash -p
-# CFLAGS			=	-Wall -Wextra -Werror -O3 -pthread
-CFLAGS			=	-Wall -Wextra -Werror -O3 -pthread -g3 -fsanitize=thread -D TSAN_OPTIONS=second_deadlock_stack=1
+CFLAGS			=	-Wall -Wextra -Werror -O3 -pthread
+# CFLAGS			=	-Wall -Wextra -Werror -O3 -pthread -g3 -fsanitize=thread -D TSAN_OPTIONS=second_deadlock_stack=1
 
 SRC				=	main.c \
 					t_philo_management.c \
 					utils.c \
-					routine.c
+					routine.c \
+					check_fork.c
 
 OBJS_DIR		=	objs/
 

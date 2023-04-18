@@ -35,17 +35,21 @@ typedef struct s_philo
 	t_stmp			time_start;
 	pthread_t		philo;
 	pthread_mutex_t	fork_mutex;
-	pthread_mutex_t	test_mutex;
 	int				fork;
 	pthread_mutex_t	*dead_mutex;
 	struct s_philo	*next;
 
 }	t_philo;
 
+/* args parsing */
+
 int		ft_atoi(const char *str);
 int		ft_isdigit(int c);
 void	*ft_calloc(size_t count, size_t size);
 int		check_args(int argc, char **argv);
+void	handle_exception_cases(char **argv);
+
+/* t_philo management */
 
 void	philo_clearlst(t_philo **lst);
 t_philo	*philo_new(int id);
@@ -53,9 +57,14 @@ t_philo	*philo_getlast(t_philo *lst);
 int		philo_addback(t_philo **lst, t_philo *node);
 void	philo_update(t_philo *lst, pthread_mutex_t *dead_mutex);
 
+/* threads routine */
+
 void	*routine(void *arg);
+int		get_fork(t_philo *philo);
+void	set_fork(t_philo *philo, int fork);
+
+/* timestamp */
 
 t_stmp	timestamp(void);
-void	handle_exception_cases(char **argv);
 
 #endif

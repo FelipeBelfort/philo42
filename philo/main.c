@@ -71,32 +71,26 @@ static void	init_threads(t_philo *philos)
 	int		i;
 	t_stmp	start;
 
-	i = 0;
-	// *philos->dead = 1;
+	i = -1;
 	pthread_mutex_lock(philos->dead_mutex);
-	while (philos->id > i)
+	while (philos->id > ++i)
 	{
-		// pthread_mutex_lock(&philos->fork_mutex);
 		if (pthread_create(&philos->philo, NULL, &routine, philos))
 			return (perror("Philosophers error: "));
 		philos = philos->next;
-		i++;
 	}
-	start = timestamp() + (i * 50);
+	start = timestamp() + ((i++) * 50);
 	while (!philos->time_start)
 	{
 		philos->time_start = start;
 		philos->last_meal = start;
-		// pthread_mutex_unlock(&philos->fork_mutex);
 		philos = philos->next;
 	}
 	pthread_mutex_unlock(philos->dead_mutex);
-	// *philos->dead = 0;
-	while (i)
+	while (--i)
 	{
 		pthread_join(philos->philo, NULL);
 		philos = philos->next;
-		i--;
 	}
 }
 
