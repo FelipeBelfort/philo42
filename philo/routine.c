@@ -73,14 +73,15 @@ void	set_fork(t_philo *philo, int fork)
 
 static void	meal_time(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->fork_mutex);
+	// pthread_mutex_lock(&philo->fork_mutex);
 	// pthread_mutex_lock(&philo->test_mutex);
 	// philo->fork = 1;
 	// pthread_mutex_unlock(&philo->test_mutex);
 	set_fork(philo, 1);
 	if (check_break(philo))
 	{
-		pthread_mutex_unlock(&philo->fork_mutex);
+		// pthread_mutex_unlock(&philo->fork_mutex);
+		set_fork(philo, 0);
 		return ;
 	}
 	printf("%llu %d has taken a fork\n", timestamp() - philo->time_start, philo->id);
@@ -96,15 +97,25 @@ static void	meal_time(t_philo *philo)
 	// 	usleep(250);
 	// }
 	// pthread_mutex_unlock(&philo->test_mutex);
-	pthread_mutex_lock(&philo->next->fork_mutex);
+	// pthread_mutex_lock(&philo->next->fork_mutex);
 	// pthread_mutex_lock(&philo->next->test_mutex);
 	// philo->next->fork = 1;
 	// pthread_mutex_unlock(&philo->next->test_mutex);
+	// if (philo->next->fork == 127)
+	// 	return ;
+	while (get_fork(philo->next))
+	{
+		if (check_break(philo))
+			return ;
+		usleep(250);
+	}
 	set_fork(philo->next, 1);
 	if (check_break(philo))
 	{
-		pthread_mutex_unlock(&philo->fork_mutex);
-		pthread_mutex_unlock(&philo->next->fork_mutex);
+		// pthread_mutex_unlock(&philo->fork_mutex);
+		// pthread_mutex_unlock(&philo->next->fork_mutex);
+		set_fork(philo, 0);
+		set_fork(philo->next, 0);
 		return ;
 	}
 	philo->last_meal = timestamp();
@@ -120,8 +131,8 @@ static void	meal_time(t_philo *philo)
 	// pthread_mutex_unlock(&philo->next->test_mutex);
 	set_fork(philo, 0);
 	set_fork(philo->next, 0);
-	pthread_mutex_unlock(&philo->fork_mutex);
-	pthread_mutex_unlock(&philo->next->fork_mutex);
+	// pthread_mutex_unlock(&philo->fork_mutex);
+	// pthread_mutex_unlock(&philo->next->fork_mutex);
 
 }
 

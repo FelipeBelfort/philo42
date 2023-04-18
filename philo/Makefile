@@ -14,6 +14,7 @@ NAME			=	philo
 
 GCC				=	cc
 
+# /usr/lib/itw-bash -p
 # CFLAGS			=	-Wall -Wextra -Werror -O3 -pthread
 CFLAGS			=	-Wall -Wextra -Werror -O3 -pthread -g3 -fsanitize=thread -D TSAN_OPTIONS=second_deadlock_stack=1
 
