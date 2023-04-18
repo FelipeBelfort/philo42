@@ -6,12 +6,20 @@
 /*   By: FelipeBelfort <FelipeBelfort@student.42    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/10 13:45:38 by FelipeBelfo       #+#    #+#             */
-/*   Updated: 2023/04/14 16:23:38 by FelipeBelfo      ###   ########.fr       */
+/*   Updated: 2023/04/19 01:05:29 by FelipeBelfo      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
+/**
+ * @brief
+ * It will print the error message in the case of no philosophers
+ * or print that the philosophers are thinking if
+ * number_of_times_each_philosopher_must_eat = 0
+ * then exits the program
+ *
+*/
 void	handle_exception_cases(char **argv)
 {
 	int	philo_nb;
@@ -27,9 +35,13 @@ void	handle_exception_cases(char **argv)
 		meals_nb = ft_atoi(argv[5]);
 	if (!meals_nb)
 		while (++i <= philo_nb)
-			printf("%llu %d has taken a fork\n", timestamp(), i);
+			printf("%llu %d is thinking\n", timestamp(), i);
 }
 
+/**
+ * @brief
+ * It returns the time stamp of the present moment
+*/
 t_stmp	timestamp(void)
 {
 	struct timeval	timestamp;
@@ -38,6 +50,17 @@ t_stmp	timestamp(void)
 	return ((timestamp.tv_sec * 1000) + (timestamp.tv_usec / 1000));
 }
 
+/**
+ * @brief
+ * Initializes the number of needed philosophers
+ * using the given data and returns the list of
+ * philosophers
+ * @param char** av -> the arguments of the program
+ * @param pthread_mutex_t* dead_mutex -> the address of the mutex to point
+ * @param int* dead -> the address of the int to point
+ * @return
+ * t_philo* a pointer to the first node of the linked list of philosophers
+*/
 static t_philo	*init_philos(char **av, pthread_mutex_t *dead_mutex, int *dead)
 {
 	t_philo	*philos;
@@ -66,6 +89,15 @@ static t_philo	*init_philos(char **av, pthread_mutex_t *dead_mutex, int *dead)
 	return (philos);
 }
 
+/**
+ * @brief
+ * It will lock the dead_mutex at start.
+ * It creates the threads for each philosopher applying the routine,
+ * initializes the time_start,
+ *  unlocks the dead_mutex,
+ *  then waits for the treads.
+ *
+*/
 static void	init_threads(t_philo *philos)
 {
 	int		i;
@@ -94,6 +126,14 @@ static void	init_threads(t_philo *philos)
 	}
 }
 
+/**
+ * It will check the arguments and if they are valid
+ * it will call the function to initialize the philosophers
+ * if there's a problem it exits
+ * else it will call the function to initialize the mutex
+ * before start the threads.
+ * then it will destroy the mutex and free the linked list before the end
+*/
 int	main(int argc, char **argv)
 {
 	t_philo			*philos;
@@ -105,7 +145,7 @@ int	main(int argc, char **argv)
 		return (1);
 	philos = init_philos(argv, &dead_mutex, &dead);
 	if (!philos)
-		return (1);
+		return (42);
 	pthread_mutex_init(&dead_mutex, NULL);
 	init_threads(philos);
 	pthread_mutex_destroy(&dead_mutex);
