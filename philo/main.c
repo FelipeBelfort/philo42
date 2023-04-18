@@ -22,7 +22,7 @@ void	handle_exception_cases(char **argv)
 	philo_nb = ft_atoi(argv[1]);
 	meals_nb = 1;
 	if (!philo_nb)
-		printf("Philosopher error: no philosopher to eat\n");
+		printf("Philosopher error: no philosopher\n");
 	if (argv[5])
 		meals_nb = ft_atoi(argv[5]);
 	if (!meals_nb)
@@ -73,6 +73,7 @@ static void	init_threads(t_philo *philos)
 
 	i = 0;
 	// *philos->dead = 1;
+	pthread_mutex_lock(philos->dead_mutex);
 	while (philos->id > i)
 	{
 		// pthread_mutex_lock(&philos->fork_mutex);
@@ -89,7 +90,8 @@ static void	init_threads(t_philo *philos)
 		// pthread_mutex_unlock(&philos->fork_mutex);
 		philos = philos->next;
 	}
-	*philos->dead = 0;
+	pthread_mutex_unlock(philos->dead_mutex);
+	// *philos->dead = 0;
 	while (i)
 	{
 		pthread_join(philos->philo, NULL);
@@ -104,7 +106,7 @@ int	main(int argc, char **argv)
 	pthread_mutex_t	dead_mutex;
 	int				dead;
 
-	dead = 1;
+	dead = 0;
 	if (check_args(argc, argv))
 		return (1);
 	philos = init_philos(argv, &dead_mutex, &dead);

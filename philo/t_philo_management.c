@@ -24,7 +24,7 @@ void	philo_clearlst(t_philo **lst)
 	{
 		next = tmp->next;
 		pthread_mutex_destroy(&tmp->fork_mutex);
-		// pthread_detach(tmp->philo);
+		pthread_mutex_destroy(&tmp->test_mutex);
 		free(tmp);
 		tmp = NULL;
 		tmp = next;
@@ -43,6 +43,7 @@ t_philo	*philo_new(int id)
 		return (NULL);
 	node->id = id;
 	pthread_mutex_init(&node->fork_mutex, NULL);
+	pthread_mutex_init(&node->test_mutex, NULL);
 	node->next = node;
 	return (node);
 }

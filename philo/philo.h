@@ -35,6 +35,7 @@ typedef struct s_philo
 	t_stmp			time_start;
 	pthread_t		philo;
 	pthread_mutex_t	fork_mutex;
+	pthread_mutex_t	test_mutex;
 	int				fork;
 	pthread_mutex_t	*dead_mutex;
 	struct s_philo	*next;

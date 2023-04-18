@@ -15,7 +15,7 @@ NAME			=	philo
 GCC				=	cc
 
 # CFLAGS			=	-Wall -Wextra -Werror -O3 -pthread
-CFLAGS			=	-Wall -Wextra -Werror -O3 -pthread -g3 -fsanitize=thread
+CFLAGS			=	-Wall -Wextra -Werror -O3 -pthread -g3 -fsanitize=thread -D TSAN_OPTIONS=second_deadlock_stack=1
 
 SRC				=	main.c \
 					t_philo_management.c \
