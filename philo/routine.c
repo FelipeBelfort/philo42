@@ -31,7 +31,9 @@ static int	check_death(t_philo *philo)
 	if (timestamp() - philo->last_meal > philo->time_die)
 	{
 		*philo->dead = philo->id;
-		printf("%llu %d died\n", timestamp() - philo->time_start, philo->id);
+		usleep(550);
+		printf(DEAD, time_diff(philo->time_start), philo->id);
+		usleep(550);
 		pthread_mutex_unlock(philo->dead_mutex);
 		return (1);
 	}
@@ -46,33 +48,28 @@ static int	check_death(t_philo *philo)
  *  print the second fork message and the eating message,
  * increment the quantity of meals and free the forks
 */
-static void	meal_time(t_philo *ph)
+static void	meal_time(t_philo *philo)
 {
-	set_fork(ph, 1);
-	if (check_death(ph))
-		return (set_fork(ph, 0));
-	printf("%llu %d has taken a fork\n", timestamp() - ph->time_start, ph->id);
-	while (get_fork(ph->next))
+	set_fork(philo, 1);
+	if (!check_death(philo))
+		printf(FORK, time_diff(philo->time_start), philo->id);
+	while (get_fork(philo->next))
 	{
-		if (check_death(ph))
-			return ;
+		if (check_death(philo))
+			return (set_fork(philo, 0));
 		usleep(250);
 	}
-	set_fork(ph->next, 1);
-	if (check_death(ph))
-	{
-		set_fork(ph, 0);
-		set_fork(ph->next, 0);
-		return ;
-	}
-	ph->last_meal = timestamp();
-	printf("%llu %d has taken a fork\n", ph->last_meal - ph->time_start, ph->id);
-	printf("%llu %d is eating\n", ph->last_meal - ph->time_start, ph->id);
-	ph->meals++;
-	while (timestamp() < ph->last_meal + ph->time_eat)
+	set_fork(philo->next, 1);
+	philo->last_meal = timestamp();
+	if (!check_death(philo))
+		printf(FORK, philo->last_meal - philo->time_start, philo->id);
+	if (!check_death(philo))
+		printf(EAT, philo->last_meal - philo->time_start, philo->id);
+	philo->meals++;
+	while (timestamp() < philo->last_meal + philo->time_eat)
 		usleep(250);
-	set_fork(ph, 0);
-	set_fork(ph->next, 0);
+	set_fork(philo, 0);
+	set_fork(philo->next, 0);
 }
 
 /**
@@ -83,13 +80,13 @@ static void	meal_time(t_philo *ph)
  * 1 = someone is dead or
  * 0 = everything is ok
 */
-static int	thinking_time(t_philo *ph)
+static int	thinking_time(t_philo *philo)
 {
-	if (get_fork(ph) || get_fork(ph->next))
-		printf("%llu %d is thinking\n", timestamp() - ph->time_start, ph->id);
-	while (get_fork(ph))
+	if ((get_fork(philo) || get_fork(philo->next)) && !check_death(philo))
+		printf(THINK, time_diff(philo->time_start), philo->id);
+	while (get_fork(philo))
 	{
-		if (check_death(ph))
+		if (check_death(philo))
 			return (1);
 		usleep(250);
 	}
@@ -108,10 +105,9 @@ static int	sleeping_time(t_philo *philo)
 {
 	t_stmp	go_sleep;
 
-	if (check_death(philo))
-		return (1);
 	go_sleep = timestamp();
-	printf("%llu %d is sleeping\n", go_sleep - philo->time_start, philo->id);
+	if (!check_death(philo))
+		printf(SLEEP, go_sleep - philo->time_start, philo->id);
 	while (timestamp() < go_sleep + philo->time_sleep)
 	{
 		if (check_death(philo))

@@ -22,7 +22,8 @@ SRC				=	main.c \
 					t_philo_management.c \
 					utils.c \
 					routine.c \
-					check_fork.c
+					check_fork.c \
+					time.c
 
 OBJS_DIR		=	objs/
 

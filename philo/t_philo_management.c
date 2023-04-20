@@ -19,8 +19,8 @@ void	philo_clearlst(t_philo **lst)
 
 	if (!lst || !(*lst))
 		return ;
-	tmp = *lst;
-	while (tmp && tmp->next != *lst)
+	tmp = (*lst)->next;
+	while (tmp && tmp != *lst)
 	{
 		next = tmp->next;
 		pthread_mutex_destroy(&tmp->fork_mutex);

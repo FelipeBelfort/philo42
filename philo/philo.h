@@ -66,5 +66,12 @@ void	set_fork(t_philo *philo, int fork);
 /* timestamp */
 
 t_stmp	timestamp(void);
+t_stmp	time_diff(t_stmp diff);
+
+# define FORK "%llu %d has taken a fork\n"
+# define EAT "%llu %d is eating\n"
+# define THINK "%llu %d is thinking\n"
+# define SLEEP "%llu %d is sleeping\n"
+# define DEAD "%llu %d died\n"
 
 #endif

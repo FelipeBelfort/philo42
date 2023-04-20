@@ -40,18 +40,6 @@ void	handle_exception_cases(char **argv)
 
 /**
  * @brief
- * It returns the time stamp of the present moment
-*/
-t_stmp	timestamp(void)
-{
-	struct timeval	timestamp;
-
-	gettimeofday(&timestamp, NULL);
-	return ((timestamp.tv_sec * 1000) + (timestamp.tv_usec / 1000));
-}
-
-/**
- * @brief
  * Initializes the number of needed philosophers
  * using the given data and returns the list of
  * philosophers
@@ -111,7 +99,7 @@ static void	init_threads(t_philo *philos)
 			return (perror("Philosophers error: "));
 		philos = philos->next;
 	}
-	start = timestamp() + ((i++) * 50);
+	start = timestamp() + ((i++) * 75);
 	while (!philos->time_start)
 	{
 		philos->time_start = start;
